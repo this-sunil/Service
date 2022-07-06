@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:evigenie/ManageVehicle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 class SelectVehiclePage extends StatefulWidget {
   const SelectVehiclePage({Key? key}) : super(key: key);
@@ -9,41 +11,42 @@ class SelectVehiclePage extends StatefulWidget {
 }
 
 class _SelectVehiclePageState extends State<SelectVehiclePage> {
-
+  List<CarItem> carProductList=[];
   List<Car> carList=[
     Car("All",""),
-    Car("Tata","images/photo/TataLogo.jpg"),
+    Car("Tata","images/photo/TataLogo.png"),
     Car("MG","images/photo/MG-Motor-Logo.png"),
     Car("Honda","images/photo/hyundai.png"),
-    Car("Mahindra","images/photo/mahindra.jpg"),
+    Car("Mahindra","images/photo/mahindra.png"),
     Car("Mercidez","images/photo/Mercedes.png"),
-    Car("jaguare","images/photo/Jaguar-Logo.png"),
-    Car("Two Vehiler","images/photo/tvs-jupiter.png"),
+    Car("jaguar","images/photo/Jaguar-Logo.png"),
+    Car("Two Wheeler","images/photo/TwoWheeler.png"),
     Car("Mini copper", "images/photo/miniCooper.png"),
-    Car("Tesla", "images/photo/tesla-t-logo.png"),
+    Car("Tesla", "images/photo/tesla-logo.png"),
     Car("Audi","images/photo/Audi.png"),
-    Car("Volvo", "images/photo/volvo.png"),
+    Car("Volvo", "images/photo/volvoLogo.png"),
     Car("BYD","images/photo/BYD-Logo.png"),
-    Car("KIA","images/photo/kia.png"),
-    Car("BMW","images/photo/bmw-logo.jpg")
+    Car("KIA","images/photo/KIALOGO.png"),
+    Car("BMW","images/photo/bmw-logo.png")
   ];
   List<CarItem> carItemList=[
 
-    CarItem("Tata","images/photo/audi car.jpg",""),
-    CarItem("MG","images/photo/MG-Motor-Logo.png",""),
-    CarItem("Honda","images/photo/Hyundai-Car.jpg",""),
-    CarItem("Kia","images/photo/KIA Car.jpg",""),
-    CarItem("Mercidez","images/photo/Mercedes Cars.jpg",""),
-    CarItem("jaguare","images/photo/Jaguar-Logo.png",""),
-    CarItem("Honda","images/photo/Hyundai-Car.jpg",""),
-    CarItem("Kia","images/photo/KIA Car.jpg",""),
-    CarItem("Mercidez","images/photo/Mercedes Cars.jpg",""),
-    CarItem("jaguare","images/photo/Jaguar-Logo.png",""),
+    CarItem("Tata","images/photo/audicar.png",""),
+    CarItem("MG","images/photo/MG-New-Electric-Car.png",""),
+    CarItem("Honda","images/photo/HyundaiCar.png",""),
+    CarItem("Kia","images/photo/KIACar.png",""),
+    CarItem("jaguar","images/photo/jaguarCar.png",""),
+    CarItem("Honda","images/photo/HyundaiCar.png",""),
+    CarItem("Kia","images/photo/KIACar.png",""),
+    CarItem("Mercidez","images/photo/Mercedes_Cars.png",""),
+    CarItem("jaguare","images/photo/jaguarCar.png",""),
 
   ];
   HashSet<Car> selectItem=HashSet();
+  HashSet<CarItem> selectCard=HashSet();
   selectBrand(List<Car> carItem,int index) async{
     if(selectItem.length==2){
+
       selectItem.remove(carItem[index]);
       print(selectItem.length);
     }
@@ -54,6 +57,23 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
 
     }
   }
+  multipleSelection(List<CarItem> carItems,int index) async{
+    if(selectCard.contains(carItems[index])){
+
+      selectCard.remove(carItems[index]);
+    }
+    else{
+
+      selectCard.add(carItems[index]);
+      selectCard.map((e){
+        carProductList.add(CarItem(e.title, e.img, e.subtitle));
+      }).toList();
+    }
+    setState(() {
+
+    });
+  }
+  bool flag=false;
   @override
   void initState() {
     selectItem.add(carList[0]);
@@ -68,11 +88,15 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
         backgroundColor: Colors.white,
         centerTitle: true,
         title:  Text("Select Vehicle",style: TextStyle(color: Colors.black)),
       ),
       body: ListView(
+        physics: BouncingScrollPhysics(),
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -101,6 +125,7 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
                           });
                         },
                         child: Card(
+
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)
                           ),
@@ -136,59 +161,73 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
                 return Stack(
                   children: [
 
-                    SizedBox(
-                    height: 150,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left:40.0),
-                      child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    InkWell(
+                      onTap:(){
+                      multipleSelection(carItemList,index);
+                    },
+                      child: SizedBox(
+                        height: 150,
+                        child: Padding(
+                        padding: const EdgeInsets.only(left:40.0),
+                        child: Card(
+                          elevation:5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(
 
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(carItemList[index].title),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Type 2"),
-                                ),
+                              color: selectCard.contains(carItemList[index])?Colors.green:Colors.white,
+                            )
+                          ),
+                          color:selectCard.contains(carItemList[index])?Colors.green.shade100:Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
 
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Wall"),
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Type 2"),
-                                ),
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(carItemList[index].title),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Type 2"),
+                                  ),
 
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Wall"),
-                                )
-                              ],
-                            ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Wall"),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Type 2"),
+                                  ),
 
-                          ],
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Wall"),
+                                  )
+                                ],
+                              ),
+
+                            ],
+                          ),
                         ),
                       ),
+                      ),
                     ),
-                  ),
                     Positioned(
-                        top:50,
-                        left:20,
-                        child: Image.asset(carItemList[index].img,width: 100)),
+                        top:20,
+                        left:5,
+                        child: Image.asset(carItemList[index].img,width: 150)),
                   ],
                 );
               }),
@@ -201,7 +240,9 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
            borderRadius: BorderRadius.circular(10),
         ),
           extendedPadding: EdgeInsets.symmetric(horizontal: 120),
-          onPressed: (){}, label: Text("Confirm")),
+          onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageVehiclePage(data: carProductList)));
+          }, label: Text("Confirm")),
     );
   }
 }
